@@ -54,15 +54,13 @@ namespace OrderPreservingEncryptionDotNet
             {
                 throw new Exception();
             }
-            IEnumerator<bool> coins;
+            CoinFlipper coins;
             if (inSize == 1){
-                coins = GetCoins(this._privateKey, value);
+                coins = new CoinFlipper(this._privateKey, value);
                 long cipherText = Stat.SampleUniform(outRange, coins);
                 return cipherText;
             }
-            coins = GetCoins(this._privateKey, mid);
-            //c++;
-            //Debug.WriteLine(c);
+            coins = new CoinFlipper(this._privateKey, mid);
             
             var x = Stat.SampleHGD(inRange, outRange, mid, coins);
             ValueRange newInRange;
@@ -80,42 +78,6 @@ namespace OrderPreservingEncryptionDotNet
             return EncryptRecursive(value, newInRange, newOutRange);
         }
 
-        public static IEnumerable<bool> TapeGen(byte[] privateKey, long value)
-        {
-            var hmac = new HMACSHA256(privateKey);
-            hmac.Initialize();
-            byte[] buffer = Encoding.ASCII.GetBytes(value.ToString());
-            var hashedKey = hmac.ComputeHash(buffer);
-            var aesCipher = CipherUtilities.GetCipher("AES/CTR/NoPadding");
-            aesCipher.Init(true, new ParametersWithIV(ParameterUtilities.CreateKeyParameter("AES", hashedKey), new byte[16]));
-            byte[] aesEncryptedValue = aesCipher.DoFinal(new byte[16]);
-            BitArray coins = new BitArray(aesEncryptedValue);
-            coins = MostSignificantBitFirst(coins);
-            for (var i = 0; i < coins.Length; i++)
-            {
-                //Console.WriteLine(i + ": "+ coins[i]);
-                yield return coins[i];
-            }
-        }
-        public static IEnumerator<bool> GetCoins(byte[] privateKey, long value)
-        {
-            return TapeGen(privateKey, value).GetEnumerator();
-        }
-        public static BitArray MostSignificantBitFirst(BitArray b)
-        {
-            BitArray bb = new BitArray(b.Length);
-            var x = -1;
-            for (var i = 0; i< b.Count; i++)
-            {
-                if (i % 8 == 0)
-                {
-                    x += 8;
-                }
-                var j = x - (i % 8);
-                bb.Set(j, b.Get(i));
-            }
-            return bb;
-        }
 
         public int Decrypt(int value)
         {
@@ -150,5 +112,71 @@ namespace OrderPreservingEncryptionDotNet
                 return key;
             }
         }
+    }
+    public class CoinFlipper
+    {
+        private byte[] _privateKey;
+        private long _value;
+        private IEnumerator<bool> _coins;
+        private int i = 0;
+
+        public CoinFlipper(byte[] privateKey, long value)
+        {
+            _privateKey = privateKey;
+            _value = value;
+            _coins = GetCoins(_privateKey, _value);
+        }
+
+        public bool GetCoin()
+        {
+            var hasNext = _coins.MoveNext();
+            i++;
+            if (hasNext)
+            {
+                var val = _coins.Current;
+                return val;
+            } else
+            {
+                _coins = GetCoins(_privateKey, _value);
+                return GetCoin();
+            }
+        }
+
+        public static IEnumerator<bool> GetCoins(byte[] privateKey, long value)
+        {
+            var hmac = new HMACSHA256(privateKey);
+            hmac.Initialize();
+            byte[] buffer = Encoding.ASCII.GetBytes(value.ToString());
+            var hashedKey = hmac.ComputeHash(buffer);
+            var aesCipher = CipherUtilities.GetCipher("AES/CTR/NoPadding");
+            aesCipher.Init(true, new ParametersWithIV(ParameterUtilities.CreateKeyParameter("AES", hashedKey), new byte[16]));
+            while (true)
+            {
+                //byte[] aesEncryptedValue = aesCipher.DoFinal(new byte[16]);
+                byte[] aesEncryptedValue = aesCipher.ProcessBytes(new byte[16]);
+                BitArray coins = new BitArray(aesEncryptedValue);
+                coins = MostSignificantBitFirst(coins);
+                for (var i = 0;i < coins.Count; i++)
+                {
+                    yield return coins[i];
+                }
+            }
+        }
+        public static BitArray MostSignificantBitFirst(BitArray b)
+        {
+            BitArray bb = new BitArray(b.Length);
+            var x = -1;
+            for (var i = 0; i < b.Count; i++)
+            {
+                if (i % 8 == 0)
+                {
+                    x += 8;
+                }
+                var j = x - (i % 8);
+                bb.Set(j, b.Get(i));
+            }
+            return bb;
+        }
+
     }
 }

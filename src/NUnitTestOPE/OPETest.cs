@@ -1,7 +1,9 @@
 using NUnit.Framework;
 using OrderPreservingEncryptionDotNet;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace NUnitTestOPE
@@ -21,14 +23,23 @@ namespace NUnitTestOPE
         }
 
         [Test]
-        public void CrashTest()
+        public void AllNumbersTest()
         {
-            var a = 3367;
-            var b = 6985;
-
-            var encA = ope.Encrypt(a);
-            var encB = ope.Encrypt(b);
-            Assert.Positive((a - b) * (encA - encB));
+            List<long> encryptedNumbers = new List<long>();
+            for (var i = 1; i < 20000; i++)
+            {
+                try
+                {
+                    long encrypted = ope.Encrypt(i);
+                    encryptedNumbers.Add(encrypted);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+            List<long> expectedNumbers = encryptedNumbers.OrderBy(d => d).ToList();
+            Assert.IsTrue(expectedNumbers.SequenceEqual(encryptedNumbers));
         }
 
         [Test]

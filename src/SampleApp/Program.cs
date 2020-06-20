@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using OrderPreservingEncryptionDotNet;
-
+using System.Diagnostics;
 namespace SampleApp
 {
     class Program
@@ -15,15 +15,22 @@ namespace SampleApp
             var ope = new OPE(kkey);
             List<long> encryptedNumbers = new List<long>();
             List<long> crashingNumbers = new List<long>();
+            List<long> times = new List<long>();
+            Stopwatch sw = new Stopwatch();
             for (var i = 1; i < 20000; i++)
             {
                 try
                 {
+                    sw.Start();
                     long encrypted = ope.Encrypt(i);
                     encryptedNumbers.Add(encrypted);
                     Console.WriteLine($"{i} -> {encrypted}");
+                    sw.Stop();
+                    var elapsed = sw.ElapsedMilliseconds;
+                    times.Add(elapsed);
+                    sw.Reset();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     crashingNumbers.Add(i);
                     Console.WriteLine($" CRASHING !!! :=> {i}");
