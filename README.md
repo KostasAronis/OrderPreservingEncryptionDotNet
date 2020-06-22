@@ -3,9 +3,6 @@
 OrderPreservingEncryptionDotNet is a dotnet core implementation of Boldyreva symmetric order-preserving encryption scheme [Boldyreva's paper](https://www.cc.gatech.edu/~aboldyre/papers/bclo.pdf).
 
 ## Installation
-
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
-
 ```
 Clone and build current repo.
 Nuget package comming soon.
