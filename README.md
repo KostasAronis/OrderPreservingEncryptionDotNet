@@ -3,9 +3,17 @@
 OrderPreservingEncryptionDotNet is a dotnet core implementation of Boldyreva symmetric order-preserving encryption scheme [Boldyreva's paper](https://www.cc.gatech.edu/~aboldyre/papers/bclo.pdf).
 
 ## Installation
+
+[Nuget package url](
+https://www.nuget.org/packages/OrderPreservingEncryptionDotNet/?fbclid=IwAR1ntEun5zaZ_BH4JSEKBA37uUDXwHLmXXR0r7goQlzW-2zxplIsAW4hnSE)
+
+Package-Manager Console  
 ```
-Clone and build current repo.
-Nuget package comming soon.
+Install-Package OrderPreservingEncryptionDotNet -Version 1.0.0  
+```
+.net CLI  
+```
+dotnet add package OrderPreservingEncryptionDotNet --version 1.0.0
 ```
 
 ## Usage
