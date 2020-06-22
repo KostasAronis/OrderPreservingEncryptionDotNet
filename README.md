@@ -1,6 +1,6 @@
 # OrderPreservingEncryptionDotNet
 
-Foobar is a Python library for dealing with word pluralization.
+OrderPreservingEncryptionDotNet is a dotnet core implementation of Boldyreva symmetric order-preserving encryption scheme [Boldyreva's paper](https://www.cc.gatech.edu/~aboldyre/papers/bclo.pdf).
 
 ## Installation
 
