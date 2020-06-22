@@ -18,7 +18,7 @@ namespace NUnitTestOPE
         public void Setup()
         {
             key = OPE.CreateKey(32);
-            ope = new OPE(Encoding.ASCII.GetBytes("2OXUVsWhyfpTIE9BWiZ7fKlC/2baLoFhagkXNTVjCf0="));
+            ope = new OPE(key);
             rng = new Random();
         }
 
@@ -43,15 +43,12 @@ namespace NUnitTestOPE
         }
 
         [Test]
-        public void RandomTest()
+        public void RandomEncryptDecryptTest()
         {
             var a = rng.Next(0, 20000);
-            var b = rng.Next(0, 20000);
-            Debug.WriteLine($"A: {a}");
-            Debug.WriteLine($"B: {b}");
             var encA = ope.Encrypt(a);
-            var encB = ope.Encrypt(b);
-            Assert.Positive((a - b) * (encA - encB));
+            var decA = ope.Decrypt(encA);
+            Assert.AreEqual(a, decA);
         }
 
         [Test]
@@ -59,8 +56,8 @@ namespace NUnitTestOPE
         {
             var a = rng.Next(0, 20000);
             var b = a + 1;
-            var encA = ope.Encrypt(15871);
-            var encB = ope.Encrypt(15872);
+            var encA = ope.Encrypt(a);
+            var encB = ope.Encrypt(b);
             Assert.Greater(encB, encA);
         }
     }

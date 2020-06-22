@@ -5,9 +5,7 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderPreservingEncryptionDotNet", "OrderPreservingEncryptionDotNet\OrderPreservingEncryptionDotNet.csproj", "{FDCFF48C-AB38-4C3C-ACE8-8BA8412497CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "SampleApp\SampleApp.csproj", "{82D6B885-98E1-4128-AD5C-6763096A578F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTestOPE", "NUnitTestOPE\NUnitTestOPE.csproj", "{127D14D6-E583-45C2-B0D9-E2740CD6CCF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTestOPE", "NUnitTestOPE\NUnitTestOPE.csproj", "{127D14D6-E583-45C2-B0D9-E2740CD6CCF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		{FDCFF48C-AB38-4C3C-ACE8-8BA8412497CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDCFF48C-AB38-4C3C-ACE8-8BA8412497CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDCFF48C-AB38-4C3C-ACE8-8BA8412497CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{82D6B885-98E1-4128-AD5C-6763096A578F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82D6B885-98E1-4128-AD5C-6763096A578F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82D6B885-98E1-4128-AD5C-6763096A578F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82D6B885-98E1-4128-AD5C-6763096A578F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{127D14D6-E583-45C2-B0D9-E2740CD6CCF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{127D14D6-E583-45C2-B0D9-E2740CD6CCF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{127D14D6-E583-45C2-B0D9-E2740CD6CCF6}.Release|Any CPU.ActiveCfg = Release|Any CPU

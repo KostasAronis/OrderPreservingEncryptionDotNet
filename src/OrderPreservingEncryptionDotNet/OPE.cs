@@ -1,11 +1,6 @@
-﻿using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace OrderPreservingEncryptionDotNet
 {
@@ -42,6 +37,16 @@ namespace OrderPreservingEncryptionDotNet
             }
             return EncryptRecursive(value, _inRange, _outRange);
         }
+        public long Decrypt(long value)
+        {
+            if (!_outRange.Contains(value))
+            {
+                throw new ArgumentOutOfRangeException("Encrypted value must be within Outter range");
+            }
+            return DecryptRecursive(value, _inRange, _outRange);
+        }
+
+
 
         private long EncryptRecursive(long value, ValueRange inRange, ValueRange outRange)
         {
@@ -79,9 +84,48 @@ namespace OrderPreservingEncryptionDotNet
         }
 
 
-        public int Decrypt(int value)
+        private long DecryptRecursive(long value, ValueRange inRange, ValueRange outRange)
         {
-            return 1;
+            var inSize = inRange.Size();
+            var outSize = outRange.Size();
+            var inEdge = inRange.Start - 1;
+            var outEdge = outRange.Start - 1;
+            long inRangeMin;
+            var mid = outEdge + Convert.ToInt32(Math.Ceiling(outSize / 2.0));
+            if (inSize > outSize)
+            {
+                throw new Exception();
+            }
+            CoinFlipper coins;
+            if (inSize == 1)
+            {
+                inRangeMin = inRange.Start;
+                coins = new CoinFlipper(this._privateKey, inRangeMin);
+                long cipherText = Stat.SampleUniform(outRange, coins);
+                if(cipherText == value)
+                {
+                    return inRangeMin;
+                }
+                else
+                {
+                    throw new Exception("Invalid ciphertext!");
+                }
+            }
+            coins = new CoinFlipper(this._privateKey, mid);
+            var x = Stat.SampleHGD(inRange, outRange, mid, coins);
+            ValueRange newInRange;
+            ValueRange newOutRange;
+            if (value <= mid)
+            {
+                newInRange = new ValueRange(inEdge + 1, x);
+                newOutRange = new ValueRange(outEdge + 1, mid);
+            }
+            else
+            {
+                newInRange = new ValueRange(x + 1, Convert.ToInt64(inEdge) + inSize);
+                newOutRange = new ValueRange(mid + 1, outEdge + outSize);
+            }
+            return DecryptRecursive(value, newInRange, newOutRange);
         }
         public static byte[] CreateKey(int keyBytes = 32)
         {
@@ -112,71 +156,5 @@ namespace OrderPreservingEncryptionDotNet
                 return key;
             }
         }
-    }
-    public class CoinFlipper
-    {
-        private byte[] _privateKey;
-        private long _value;
-        private IEnumerator<bool> _coins;
-        private int i = 0;
-
-        public CoinFlipper(byte[] privateKey, long value)
-        {
-            _privateKey = privateKey;
-            _value = value;
-            _coins = GetCoins(_privateKey, _value);
-        }
-
-        public bool GetCoin()
-        {
-            var hasNext = _coins.MoveNext();
-            i++;
-            if (hasNext)
-            {
-                var val = _coins.Current;
-                return val;
-            } else
-            {
-                _coins = GetCoins(_privateKey, _value);
-                return GetCoin();
-            }
-        }
-
-        public static IEnumerator<bool> GetCoins(byte[] privateKey, long value)
-        {
-            var hmac = new HMACSHA256(privateKey);
-            hmac.Initialize();
-            byte[] buffer = Encoding.ASCII.GetBytes(value.ToString());
-            var hashedKey = hmac.ComputeHash(buffer);
-            var aesCipher = CipherUtilities.GetCipher("AES/CTR/NoPadding");
-            aesCipher.Init(true, new ParametersWithIV(ParameterUtilities.CreateKeyParameter("AES", hashedKey), new byte[16]));
-            while (true)
-            {
-                //byte[] aesEncryptedValue = aesCipher.DoFinal(new byte[16]);
-                byte[] aesEncryptedValue = aesCipher.ProcessBytes(new byte[16]);
-                BitArray coins = new BitArray(aesEncryptedValue);
-                coins = MostSignificantBitFirst(coins);
-                for (var i = 0;i < coins.Count; i++)
-                {
-                    yield return coins[i];
-                }
-            }
-        }
-        public static BitArray MostSignificantBitFirst(BitArray b)
-        {
-            BitArray bb = new BitArray(b.Length);
-            var x = -1;
-            for (var i = 0; i < b.Count; i++)
-            {
-                if (i % 8 == 0)
-                {
-                    x += 8;
-                }
-                var j = x - (i % 8);
-                bb.Set(j, b.Get(i));
-            }
-            return bb;
-        }
-
     }
 }
