@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OrderPreservingEncryptionDotNet
 {
-    public class CoinFlipper
+    internal class CoinFlipper
     {
         private byte[] _privateKey;
         private long _value;
@@ -29,8 +29,9 @@ namespace OrderPreservingEncryptionDotNet
             {
                 var val = _coins.Current;
                 return val;
-            } else
-            {
+            }
+            else
+            { //will never reach here.
                 _coins = GetCoins(_privateKey, _value);
                 return GetCoin();
             }

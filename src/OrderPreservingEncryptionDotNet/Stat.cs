@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace OrderPreservingEncryptionDotNet
 {
-    public static class Stat
+    internal static class Stat
     {
-        public static long SampleUniform(ValueRange valueRange, CoinFlipper coins)
+        internal  static long SampleUniform(ValueRange valueRange, CoinFlipper coins)
         {
             var currentRange = valueRange.Copy();
             if (currentRange.Size() == 0)
@@ -17,7 +16,7 @@ namespace OrderPreservingEncryptionDotNet
             {
                 var mid = (currentRange.Start + currentRange.End) / 2;
                 var bit = coins.GetCoin();
-                if ((bool)bit)
+                if (bit)
                 {
                     currentRange.Start = mid + 1;
                 }
@@ -164,13 +163,13 @@ namespace OrderPreservingEncryptionDotNet
         private static double LogGamma(double x)
         {
             var a = new List<double>()
-    {
-        8.333333333333333e-02, -2.777777777777778e-03,
-        7.936507936507937e-04, -5.952380952380952e-04,
-        8.417508417508418e-04, -1.917526917526918e-03,
-        6.410256410256410e-03, -2.955065359477124e-02,
-        1.796443723688307e-01, -1.39243221690590e+00
-    };
+            {
+                8.333333333333333e-02, -2.777777777777778e-03,
+                7.936507936507937e-04, -5.952380952380952e-04,
+                8.417508417508418e-04, -1.917526917526918e-03,
+                6.410256410256410e-03, -2.955065359477124e-02,
+                1.796443723688307e-01, -1.39243221690590e+00
+            };
             x *= 1.0;
             double x0 = x;
             double n = 0;
@@ -201,40 +200,6 @@ namespace OrderPreservingEncryptionDotNet
                 }
             }
             return gl;
-        }
-    }
-    public class PRNG
-    {
-        private CoinFlipper _coins;
-
-        public PRNG(CoinFlipper coins)
-        {
-            _coins = coins;
-        }
-        public double Draw()
-        {
-            var idx = 0;
-            BitArray bits = new BitArray(32);
-            while (idx < 32)
-            {
-                var bit = _coins.GetCoin();
-                bits.Set(idx, bit);
-                idx += 1;
-            }
-            long o = 0;
-            var sum = 0;
-            foreach (bool bit in bits)
-            {
-                long bitVal = bit ? 1 : 0;
-                sum += (int)bitVal;
-                o = (o << 1) | bitVal;
-            }
-            var res = 1.0 * o / (Math.Pow(2, 32) - 1);
-            if (res <= 0 || res > 1)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-            return res;
         }
     }
 }
