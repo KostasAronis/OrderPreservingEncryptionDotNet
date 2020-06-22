@@ -1,1 +1,56 @@
 # OrderPreservingEncryptionDotNet
+
+Foobar is a Python library for dealing with word pluralization.
+
+## Installation
+
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+
+```
+Clone and build current repo.
+Nuget package comming soon.
+```
+
+## Usage
+
+```csharp
+using OrderPreservingEncryptionDotNet;
+
+{...}
+
+private byte[] key = OPE.CreateKey(32);
+private OPE ope = new OPE(key);
+var n1 = 1000;
+var n2 = 1100;
+var n1Encrypted = ope.Encrypt(n1);
+var n2Encrypted = ope.Encrypt(n2);
+
+if(n1Encrypted < n2Encrypted)
+{
+  Console.WriteLine("It works");
+}
+else
+{
+  throw new Exception(":-( Write me up an issue please.");
+}
+
+var n1Decrypted = ope.Decrypt(n1Encrypted);
+var n2Decrypted = ope.Decrypt(n2Encrypted);
+
+if( n1Decrypted != n1 || n2Decrypted != n2)
+{
+  throw new Exception(":-( Write me up an issue please.");
+}
+
+```
+
+## Contributing
+Issues are wellcome. Pull requests are more than welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[GNU GENERAL PUBLIC LICENSE](LICENSE)
+
+## Dependencies
+[Bouncy Castle](https://www.bouncycastle.org/csharp/index.html)
