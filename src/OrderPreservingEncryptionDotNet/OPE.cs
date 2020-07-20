@@ -12,7 +12,9 @@ namespace OrderPreservingEncryptionDotNet
         private const int DEFAULT_OUT_RANGE_END = 2147483647;
         private readonly byte[] _privateKey;
         private readonly ValueRange _inRange;
+        public ValueRange InRange { get=>_inRange; }
         private readonly ValueRange _outRange;
+        public ValueRange OutRange { get => _outRange; }
         private int c;
 
         public OPE(byte[] privateKey)
@@ -27,7 +29,6 @@ namespace OrderPreservingEncryptionDotNet
             _privateKey = privateKey;
             _inRange = inRange;
             _outRange = outRange;
-            
         }
         public long Encrypt(int value)
         {
@@ -45,8 +46,6 @@ namespace OrderPreservingEncryptionDotNet
             }
             return DecryptRecursive(value, _inRange, _outRange);
         }
-
-
 
         private long EncryptRecursive(long value, ValueRange inRange, ValueRange outRange)
         {

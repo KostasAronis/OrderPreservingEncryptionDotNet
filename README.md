@@ -9,11 +9,11 @@ https://www.nuget.org/packages/OrderPreservingEncryptionDotNet/?fbclid=IwAR1ntEu
 
 Package-Manager Console  
 ```
-Install-Package OrderPreservingEncryptionDotNet -Version 1.0.0  
+Install-Package OrderPreservingEncryptionDotNet  
 ```
 .net CLI  
 ```
-dotnet add package OrderPreservingEncryptionDotNet --version 1.0.0
+dotnet add package OrderPreservingEncryptionDotNet
 ```
 
 ## Usage

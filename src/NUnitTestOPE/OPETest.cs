@@ -26,7 +26,7 @@ namespace NUnitTestOPE
         public void AllNumbersTest()
         {
             List<long> encryptedNumbers = new List<long>();
-            for (var i = 1; i < 20000; i++)
+            for (var i = 1; i < ope.InRange.End; i++)
             {
                 try
                 {
