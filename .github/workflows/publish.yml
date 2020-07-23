@@ -2,14 +2,15 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    tags:
+      - '*'
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9
       with:
@@ -31,6 +32,6 @@ jobs:
     - name: Test 
       run: dotnet test --no-restore --verbosity minimal src/
     - name: Pack with dotnet
-      run: dotnet pack src/OrderPreservingEncryptionDotNet/OrderPreservingEncryptionDotNet.csproj --output nuget-packages --configuration Release -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}-${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }} 
+      run: dotnet pack src/OrderPreservingEncryptionDotNet/OrderPreservingEncryptionDotNet.csproj --output nuget-packages --configuration Release -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}-rc${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }} 
     - name: Push with dotnet
       run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
