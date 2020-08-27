@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace OrderPreservingEncryptionDotNet
 {
@@ -16,7 +17,7 @@ namespace OrderPreservingEncryptionDotNet
         private readonly ValueRange _outRange;
         public ValueRange OutRange { get => _outRange; }
         private int c;
-
+        public OPE(string privateKey) : this(Encoding.ASCII.GetBytes(privateKey)) { }
         public OPE(byte[] privateKey)
         {
             c = 0;
@@ -42,7 +43,7 @@ namespace OrderPreservingEncryptionDotNet
         {
             if (!_outRange.Contains(value))
             {
-                throw new ArgumentOutOfRangeException("Encrypted value must be within Outter range");
+                throw new ArgumentOutOfRangeException("Encrypted value must be within Outer range");
             }
             return DecryptRecursive(value, _inRange, _outRange);
         }
